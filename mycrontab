@@ -1,0 +1,4 @@
+# minute hour day-of-month month day-of-week what
+
+# check for Twitter unfollows every 30 minutes
+# 30 * * * * /Users/mark/bin/unfollowers.rb
