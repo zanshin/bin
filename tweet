@@ -1,0 +1,16 @@
+#!/bin/sh
+#  
+#	This script posts a tweet to Twitter using the text given as input for the tweet text.
+#
+#   who when        what
+#   mhn 6.24.2009   initial version of tweet
+
+#
+#	
+if [ "$1" = "-h" ]; then
+	echo "Usage $0 [-h] tweet \n   Use -h for help." >&2; exit 1
+fi
+
+curl --basic --user "zanshin:Nji90okm" --data-ascii "status=$1" "http://twitter.com/statuses/update.json"
+
+echo "Tweeted"
