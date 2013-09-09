@@ -60,5 +60,6 @@ Dir.chdir(BLOG_DIR) do
   puts "Running: " + rake_isolate
   isolate_result = capture_stdout {Rake.application.invoke_task("#{rake_isolate}")}
   puts "Posting created and isolated, opening in editor..."
-  exec "subl -n #{POST_DIR}/#{new_post}"
+  # exec "subl -n #{POST_DIR}/#{new_post}"
+  exec "vim #{POST_DIR}/#{new_post}"
 end
