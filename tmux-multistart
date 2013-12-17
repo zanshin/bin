@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if [ -z "$*" ]; then
+    read servers
+else
+    servers="$@"
+fi
+
+fullservers=""
+name="`echo $servers | sed -e 's/[. ].*//'`"
+
+
+for serv in $servers; do
+    if [ -f "$HOME/.dotfiles/machines/$serv" ]; then
+      fullservers="$fullservers `cat $HOME/.dotfiles/machines/$serv`"
+    else
+	if [ "${serv:0:1}" == "*" ]; then
+	    name=${serv:1}
+	else
+	    fullservers="$fullservers $serv"
+	fi
+    fi
+done
+
+tmux new-window -n "$name"
+for serv in $fullservers; do 
+    tmux split-window "ssh $serv"
+    tmux select-layout even-vertical >/dev/null 2>&1
+done
+tmux kill-pane -t 0
+tmux select-layout even-vertical >/dev/null 2>&1
