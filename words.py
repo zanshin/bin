@@ -8,9 +8,9 @@ def main(argv):
 
     # path = '/path/to/jekyll/posts/'
     #path = '/Users/mark/Projects/octopress/solfege/source/_posts/'
-    dirpath = '/Users/mark/Projects/octopress/'
-    site = ''
-    posts = '/source/_posts/'
+    dirpath = '/Users/mark/Projects/websites/'
+    site = 'zanshin'
+    posts = '/_posts/'
     
     try:
         opts, args = getopt.getopt(sys.argv,"hs:",["sitename="])
