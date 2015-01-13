@@ -8,7 +8,7 @@ def main(argv):
 
     # path = '/path/to/jekyll/posts/'
     #path = '/Users/mark/Projects/octopress/solfege/source/_posts/'
-    dirpath = '/Users/mark/Projects/websites/'
+    dirpath = '/Users/mark/code/'
     site = 'zanshin'
     posts = '/_posts/'
     
