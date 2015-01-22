@@ -1,9 +1,18 @@
 #!/bin/sh
+# for use in tmux
+# assumes chef repositories set up for chef servers in:
+#  ~/code/chef/"chefreponame"
+# bind-key C command-prompt -p "machine(s)/group: " "run-shell 'tmux-multistart %1'"
 
 if [ -z "$*" ]; then
     read servers
 else
     servers="$@"
+fi
+
+if [ "${servers[0]}" == "chef" ]; then
+  cd ~/src/${servers[0]}/${servers[1]}
+  servers="*${servers[0]}/${servers[1]}:${servers[2]} `knife search -i ${servers[@]:2}  | tail +3`"
 fi
 
 fullservers=""
