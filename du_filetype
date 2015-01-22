@@ -1,0 +1,31 @@
+#!/bin/bash
+
+find . -type f \
+  —name “*.mp4” \
+  -o -name “*.m4v” \
+  -o -name “*.mp3” \
+  -o -name “*.wav” \
+  -o -name “*.flv” \
+  -o -name “*.mpeg” \
+  -o -name *.mpg” \
+  -o -name “*.mpe” \
+  -o -name “*.rm” \
+  -o -name “*.rv” \
+  -o -name “*.ra” \
+  -o -name “*.wmv” \
+  -o -name “*.wma” \
+  -o -name “*.avi” \
+  -o -name “*.mov” \
+  -o -name “*.asf” \
+  -o -name “*.ogg” \
+  -o -name “*.webm” -printf "%f %s\n" | 
+  awk '{ 
+    PARTSCOUNT=split( $1, FILEPARTS, "." ); 
+    EXTENSION=PARTSCOUNT == 1 ? "NULL" : FILEPARTS[PARTSCOUNT]; 
+    FILETYPE_MAP[EXTENSION]+=$2 
+  } 
+  END { 
+    for( FILETYPE in FILETYPE_MAP ) { 
+      print FILETYPE_MAP[FILETYPE], FILETYPE; 
+    } 
+  }' | sort -n
