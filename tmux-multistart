@@ -1,7 +1,7 @@
 #!/bin/sh
 # for use in tmux
 # assumes chef repositories set up for chef servers in:
-#  ~/code/chef/"chefreponame"
+#  ~/code/chef/"chefreponame" where chefrepo is a symlink to the repository
 # bind-key C command-prompt -p "machine(s)/group: " "run-shell 'tmux-multistart %1'"
 
 if [ -z "$*" ]; then
