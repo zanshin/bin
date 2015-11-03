@@ -1,4 +1,7 @@
 #!/bin/sh
 
-tmux split-window "ssh $@"
+title=$1
+shift
+
+tmux split-window "ssh $title" -t $title
 tmux select-layout even-vertical >/dev/null 2>&1
