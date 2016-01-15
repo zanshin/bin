@@ -1,0 +1,84 @@
+#!/bin/bash
+
+usage()
+{
+    echo "Usage: disk_usage_by_file_type -c directory"
+    echo "           analyze disk usage of directory (collect data)"
+    echo ""
+    echo "       disk_usage_by_file_type -s"
+    echo "           print disk usage by file type (uses data collected with -c)"
+    echo ""
+    echo "       disk_usage_by_file_type -d file_type_pattern"
+    echo "           list files and sizes for a given file type pattern"
+    exit 1
+}
+
+dir="/tmp/file_db"
+collect_file_types()
+{
+    rm -rf "$dir"; mkdir "$dir"
+    find "$1" -type f | while read f ; do 
+  t=`file -i -F\| "$f" | cut -d\| -f2 `
+  t=${t////|}   # replace '/' -> '|'
+  t=${t/# /}    # remove heading space
+  d="${f%/*}"   # current dir
+  printf "${d:0:100}...                         \r"
+  echo "$f" >> "$dir/$t"
+    done   
+}
+
+
+disk_usage_for_type()
+{
+    perl <(cat <<'EOF'
+#!/usr/bin/perl
+
+my $verbose = ($ARGV[0] eq "-v");
+
+my $total = 0;
+foreach my $file (<STDIN>)
+{
+    chomp($file);
+    my @st = stat($file);
+    my $size_kb = $st[7] / 1024;
+    $total += $size_kb;
+    if ($verbose)
+    { printf("%i: $file\n", $size_kb); }
+}
+
+if (!$verbose)
+{ printf("%i Mb\n", $total / 1024); }
+EOF
+) "$@"
+
+}
+
+print_summary()
+{
+    for f in "$dir"/* ; do
+  g=`echo "$f" | sed -e "s|$dir/||"`
+  echo `disk_usage_for_type < "$f"` ": $g" 
+    done
+}
+
+if [ "$1" = "-c" ]; then
+    echo "Collecting file type data, please wait ..."
+    collect_file_types "$2"
+    echo "                                                                                "; echo ""  
+    echo "Done. Now run 'disk_usage_by_file_type -s' to print disk usage."
+    exit 0
+fi
+
+if [ "$1" = "-s" ]; then    
+    print_summary | sort -n
+    exit 0
+fi
+
+if [ "$1" = "-d" ]; then   
+    for f in "$dir"/*$2*; do
+  disk_usage_for_type -v < "$f"
+    done
+    exit 0
+fi
+
+usage
