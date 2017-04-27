@@ -25,7 +25,6 @@ validint()
   fi
 
   # Create a version of the number that has no digits for testing.
-  echo "testvalue $testvalue"
   nodigits="$(echo $testvalue | sed 's/[[:digit:]]//g')"
 
   # Check for nondigit characters
