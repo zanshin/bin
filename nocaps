@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# This temporarily remaps the CapsLock key to a Control key.
+# The keyboard will return to the previous settings after a reboot.
+# The Linux console and the X Windows system each handle key presses separately
+# so each must be remapped separately. First remap the X keyboard since this
+# does not require root access.
+
+# Remap the Capslock key to a Control key for X Windows
+if type setxkbmap >/dev/null @>&1; then
+        setxkbmap -layout us -option ctrl:nocaps 2>/dev/null
+fi
+
+# You need to be root to remap the console keyboard
+if [ "$(id -u)" != "0" ]; then
+        echo "This script is not running as root so"
+        echo "the console CapsLock cannot be remapped."
+        echo "Perhaps you forgot to run this under sudo."
+        echo "Note that this does not effect X. This only"
+        echo "effects the consoles running on Alt-f1 through"
+        echo "lt-f6."
+        exit 2
+fi
+
+# Remap the CapsLock key to a Control key for the console.
+(dumpkeys | grep keymaps; echo "keycode 58 = Control") | loadkeys
