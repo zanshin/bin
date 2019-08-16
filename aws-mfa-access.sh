@@ -17,7 +17,7 @@ fi
 session_duration=129600
 
 # Taken from AWS Console: FIXME
-mfa_device_code="arn:aws:iam::158931857387:mfa/mark"
+mfa_device_code="FIXME"
 
 # Taken from command line argument
 mfa_code=$1

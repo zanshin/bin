@@ -8,15 +8,15 @@ FILENAME=$HOME/.aws/credentials
 
 # save default key information for mfa command
 echo "[default]" >> $FILENAME
-echo "aws_access_key_id = ASIASKAITV7VTPAHXS7A" >> $FILENAME
-echo "aws_secret_access_key = fVmFjXGrxOnFwRqJ11B1ekUrIEw8KGjzTPa4mByF" >> $FILENAME
+echo "aws_access_key_id = FIXME" >> $FILENAME
+echo "aws_secret_access_key = FIXME" >> $FILENAME
 
 # prompt for mfa token
 echo "Enter MFA code"
 read mfacode
 
 # run aws token command
-result=$(aws sts get-session-token --serial-number arn:aws:iam::158931857387:mfa/mark --token-code $mfacode)
+result=$(aws sts get-session-token --serial-number FIXME --token-code $mfacode)
 
 # clear file again and store new keys
 > $FILENAME

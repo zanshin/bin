@@ -14,10 +14,10 @@
 # Need two arguments
 # 1 or 2 args ok
 if [[ $# -ne 2 ]]; then
-  echo "Usage: $0 <MFA_TOKEN_CODE> <AWS_CLI_PROFILE>"
+  echo "Usage: $0 <MFA_PROFILE_NAME> <BASE_PROFILE_NAME>"
   echo "Where:"
-  echo "   <MFA_TOKEN_CODE> = Code from virtual MFA device"
-  echo "   <AWS_CLI_PROFILE> = aws-cli profile usually in $HOME/.aws/config"
+  echo "   <MFA_PROFILE_NAME> = The profile name for the MFA session"
+  echo "   <BASE_PROFILE_NAME> = The base session profile"
   exit 2
 fi
 
@@ -26,7 +26,7 @@ MFA_PROFILE_NAME=$1
 BASE_PROFILE_NAME=$2
 
 # Set default region
-DEFAULT_REGION="us-east-1"
+DEFAULT_REGION="us-east"
 
 # Set default output encoding
 DEFAULT_OUTPUT="json"
@@ -43,31 +43,53 @@ fi
 
 # MFA Serial: specity MFA serial of IAM user
 # E.g.,: arn:aws:iam::123456789123:mfa/iamusername
-# Read MFA Serial from environment
-[[ -z "${AWS_MFA_SERIAL}" ]] && echo "MFA Serial missing; exiting" ; exit 1 || MFA_SERIAL="${AWS_MFA_SERIAL}"
+# Read AWS MFA Serial, Secret Access Key, and Access Key ID from environment
+if [ -z "${AWS_MFA_SERIAL}" ];then
+    echo "MFA Serial is missing; exiting"
+    exit 1
+fi
+
+if [ -z "${AWS_SECRET_ACCESS_KEY}" ];then
+    echo "AWS Secret Access Key is missing; exiting"
+    exit 1
+fi
+
+if [ -z "${AWS_ACCESS_KEY_ID}" ];then
+    echo "AWS Access Key ID is missing; exiting"
+    exit 1
+fi
+
+echo "serial: $AWS_MFA_SERIAL"
+echo "secret: $AWS_SECRET_ACCESS_KEY"
+echo "id    : $AWS_ACCESS_KEY_ID"
 
 # Generate security token flag
 GENERATE_ST="true"
 
 # Expiration Time: SessionToken defaults to 12 hour lifespan, can be 15 minutes
 # to 36 hours
-MFA_PROFILE_EXISTS=`less ~/.aws/credentials | grep $MFA_PROFILE_NAME | wc -l`
-if [ $MFA_PROFILE_EXISTS -eq 1 ]; then
+# MFA_PROFILE_EXISTS=`less ~/.aws/credentials | grep $MFA_PROFILE_NAME | wc -l`
+if [ `less ~/.aws/credentials | grep $MFA_PROFILE_NAME | wc -l` ]; then
   EXPIRATION_TIME=$(aws configure get expiration --profile $MFA_PROFILE_NAME)
-  NOW=$(date -u + "%Y-%m-%dT%H:%M%SZ")
-  if [[ "$EXPIRATION_TIME" > "$NOW" ]]; thne
+  echo "$EXPIRATION_TIME"
+  NOW=$(date -u +"%Y-%m-%d %T")
+  if [[ "$EXPIRATION_TIME" > "$NOW" ]]; then
     echo "The session token is still valid. New security token not required."
     GENERATE_ST="false"
   fi
 fi
 
 if [ "$GENERATE_ST" = "true" ]; then
-  read -p "Token code from MFA device ($MFA_SERIAL): TOKEN_CODE
+  echo "3"
+  read -p "Token code for MFA device ($AWS_MFA_SERIAL): " TOKEN_CODE
   echo "Generating new IAM STS Token ..."
-  read -r AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN EXPIRATION_TIME AWS_ACCESS_KEY_ID < <(aws sts get-session-token --profile $BASE_PROFILE_NAME --output text --query 'Credentials.*" --serial-number $MFA_SERIAL --toke-code $TOKEN_CODE)
+
+  read -r AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN EXPIRATION AWS_ACCESS_KEY_ID < <(aws sts get-session-token --profile $BASE_PROFILE_NAME --output text --query 'Credentials.*' --serial-number $AWS_MFA_SERIAL --token-code $TOKEN_CODE)
+
   if [ $? -ne 0 ]; then
     echo "An error occured. AWS credentials file not updated."
   else
+    echo "4"
     aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY" --profile $MFA_PROFILE_NAME
     aws configure set awd_session_token "$AWS_SESSION_TOKEN" --profile $MFA_PROFILE_NAME
     aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" --profile $MFA_PROFILE_NAME
