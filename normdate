@@ -6,6 +6,7 @@
 
 monthNumToName()
 {
+#  echo "Input month $1 day $2 year $3"
   # Sets the 'month' variable to the appropriate value.
   case $1 in
   1 ) month="Jan"    ;;
@@ -23,6 +24,7 @@ monthNumToName()
   * ) echo "$0: Unknown month value $1" >&2
       exit 1
   esac
+#  echo $month $2 $3
   return 0
 }
 
