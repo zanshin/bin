@@ -1,5 +1,7 @@
 #!/bin/bash
- 
+set -e
+set -o pipefail
+
 echo
 find . -type d -name ".git" -execdir bash -c '
     if [ ! $(git status | grep -o nothing) ]

@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+set -e
+set -o pipefail
 
 # bestcompress - Given a file, tries compressing it with all the available
 #    compression tools and keeps the compressed file that's the smallest, reporting
@@ -51,13 +53,13 @@ do
     case "$smallest" in
         1 ) echo "No space savings by compressing $name. Left as is."
             ;;
-        2 ) echo Best compression is with compress. File renamed ${name}.Z
+        2 ) echo "Best compression is with compress. File renamed ${name}.Z"
             mv $Zout "${name}.Z" ; rm -f "$name"
             ;;
-        3 ) echo Best compression is with gzip. File renamed ${name}.gz
+        3 ) echo "Best compression is with gzip. File renamed ${name}.gz"
             mv $gzout "${name}.gz" ; rm -f "$name"
             ;;
-        4 ) echo Best compression is with bzip2. File renamed ${name}.bz2
+        4 ) echo "Best compression is with bzip2. File renamed ${name}.bz2"
             mv $bzout "${name}.bz2" ; rm -f "$name"
     esac
 

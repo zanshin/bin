@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-# catwhich
-# cat a file in your path
-
-file=$1
-
-cat $(which $file)

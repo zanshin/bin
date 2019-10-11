@@ -1,8 +1,10 @@
 #!/bin/bash
+set -e
+set -o pipefail
 
 if [ -z "$1" ]
   then
-    echo "Usage: $0 [aws-config.json | est-config.json | ome-config.json]" 
+    echo "Usage: $0 [aws-config.json | est-config.json | ome-config.json]"
     exit 1
 fi
 

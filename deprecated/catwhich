@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e
+set -o pipefail
+
+# catwhich
+# cat a file in your path
+
+file=$1
+
+cat $(which "$file")

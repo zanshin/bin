@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+set -o pipefail
 
 usage()
 {
@@ -17,14 +19,14 @@ dir="/tmp/file_db"
 collect_file_types()
 {
     rm -rf "$dir"; mkdir "$dir"
-    find "$1" -type f | while read f ; do 
+    find "$1" -type f | while read f ; do
   t=`file -i -F\| "$f" | cut -d\| -f2 `
   t=${t////|}   # replace '/' -> '|'
   t=${t/# /}    # remove heading space
   d="${f%/*}"   # current dir
   printf "${d:0:100}...                         \r"
   echo "$f" >> "$dir/$t"
-    done   
+    done
 }
 
 
@@ -57,24 +59,24 @@ print_summary()
 {
     for f in "$dir"/* ; do
   g=`echo "$f" | sed -e "s|$dir/||"`
-  echo `disk_usage_for_type < "$f"` ": $g" 
+  echo `disk_usage_for_type < "$f"` ": $g"
     done
 }
 
 if [ "$1" = "-c" ]; then
     echo "Collecting file type data, please wait ..."
     collect_file_types "$2"
-    echo "                                                                                "; echo ""  
+    echo "                                                                                "; echo ""
     echo "Done. Now run 'disk_usage_by_file_type -s' to print disk usage."
     exit 0
 fi
 
-if [ "$1" = "-s" ]; then    
+if [ "$1" = "-s" ]; then
     print_summary | sort -n
     exit 0
 fi
 
-if [ "$1" = "-d" ]; then   
+if [ "$1" = "-d" ]; then
     for f in "$dir"/*$2*; do
   disk_usage_for_type -v < "$f"
     done

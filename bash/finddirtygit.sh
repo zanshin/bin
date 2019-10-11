@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+set -o pipefail
 
 ##############################################################################
 # Find any dirty git projects in the current working directory
@@ -12,24 +14,24 @@
 ##############################################################################
 
 # Find all directories that have a .git directory in them
-for gitprojpath in `find . -type d -name .git | sed "s/\/\.git//"`; do
+for gitprojpath in $(find . -type d -name .git | sed "s/\/\.git//"); do
   # Save the current working directory before CDing for git's purpose
   pushd . >/dev/null
 
   # Switch to the git-enabled project directory
-  cd $gitprojpath
-  
+  cd "$gitprojpath"
+
   # Are there any changed files in the status output?
   isdirty=$(git status -s | grep "^.*")
   if [ -n "$isdirty" ]; then
     # Should output be verbose?
     if [ "$1" = "-v" ]; then
       echo
-      echo "DIRTY:" $gitprojpath
+      echo "DIRTY: $gitprojpath"
       git status -s
     # Or should output be quiet?
     else
-      echo "DIRTY:" $gitprojpath
+      echo "DIRTY: $gitprojpath"
     fi
   fi
   # Return to the starting directory, suppressing the output
