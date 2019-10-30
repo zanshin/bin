@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # https://github.com/schneems/explain_shell
 
@@ -16,4 +16,5 @@ for i in "$@"; do
 done
 
 # opens url in browser
-open $url
+# open "$url"
+xdg-open "$url"
