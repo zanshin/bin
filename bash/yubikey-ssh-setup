@@ -10,18 +10,24 @@
 # :authors: Jess Frazelle, @jessfraz
 # :date: 14 February 2018
 # :version: 0.0.1
+#
+# :history:
+# :author: Mark Nichols, @zanshin
+# :date: 9 November 2019
+# :version: 0.0.2 - Updated for my use
+#
 ##############################################################################
 set -e
 set -o pipefail
 
-SUBKEY_LENGTH=${SUBKEY_LENGTH:=2048}
+SUBKEY_LENGTH=${SUBKEY_LENGTH:=4096}
 SUBKEY_EXPIRE=${SUBKEY_EXPIRE:=0}
-SURNAME=${SURNAME:="Frazelle"}
-GIVENNAME=${GIVENNAME:="Jessie"}
+SURNAME=${SURNAME:="Nichols"}
+GIVENNAME=${GIVENNAME:="Mark"}
 EMAIL=${EMAIL:=$GMAIL}
-PUBLIC_KEY_URL=${PUBLIC_KEY_URL:="https://keybase.io/jessie/key.asc"}
+PUBLIC_KEY_URL=${PUBLIC_KEY_URL:="https://keybase.io/zanshin/key.asc"}
 KEYID=${KEYID:=$GPGKEY}
-SEX=${SEX:=F}
+SEX=${SEX:=M}
 
 if [[ -z "$KEYID" ]]; then
 	echo "Set the KEYID env variable."
@@ -83,8 +89,10 @@ setup_gnupghome(){
 	# IMPORTANT: This is here as a stopper for anyone who runs this without reading it,
 	# because it will exit here.
 	# Modify this line to copy from a USB stick or your $HOME directory.
-	echo "Copying master key from Google Cloud Storage..."
-	gsutil -m cp gs://misc.j3ss.co/dotfiles/.gnupg/* "${GNUPGHOME}/"
+	# echo "Copying master key from Google Cloud Storage..."
+	# gsutil -m cp gs://misc.j3ss.co/dotfiles/.gnupg/* "${GNUPGHOME}/"
+  echo "Copying master key from keybase.io..."
+  keybase pgp export --unencrypted --outfile "${GNUPGPHOME}/"
 
 	# Re-import the secret keys.
 	gpg --import "${GNUPGHOME}/secring.gpg"
