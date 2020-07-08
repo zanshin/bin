@@ -1,0 +1,64 @@
+#!/bin/bash
+set -e
+set -o pipefail
+
+#
+# today: Create new daily log file from template, or edit existing one, if it
+# is already created. If passed an argument, assume it is a bolus of data to be
+# appended to the end of the file as is.
+#
+
+# 0 args, create/edit daily log file
+# 1 arg eq 'template' - edit template file
+# 1 arg ne 'template' - append argument to end of current day log file
+
+if [[ $# -ne 0 && $# -ne 1 ]]; then
+  echo "Usage: $0 template - to edit template file"
+  echo "     : $0 <string> - to append <string> to end of log file"
+  echo "     : $0 - to create/edit daily log file"
+  exit 2
+fi
+
+# Working Storage Section <snerk>
+year=$(date '+%Y')
+month=$(date '+%m')
+day=$(date '+%d')
+
+todaydir="$HOME/Sync/documents/journal"
+todaylog="$todaydir/$year/$month/$day.md"
+pattern="$HOME/Sync/documents/journal/day.md"
+
+day_log() {
+  mkdir -p $todaydir/$year/$month
+
+  # Determine if daily log file exists, edit or create as necessary
+  if [ -f $todaylog ] ; then
+    echo "Day log exists, editing file."
+  else
+    echo "Day log does not exist, creating new file."
+    cp $pattern $todaylog
+  fi
+
+}
+
+if [[ $# -eq 0 ]]; then
+  day_log
+  nvim $todaylog
+  exit 0
+fi
+
+if [[ $1 = "template" ]]; then
+  echo $1
+  echo " edit the template"
+  nvim $pattern
+  exit 0
+fi
+
+if [[ $1 != "template" ]]; then
+  echo $1
+  echo " append to the end of the file"
+  day_log
+  cat ${1} >> $todaylog
+  exit 0
+fi
+
