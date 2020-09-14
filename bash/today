@@ -13,9 +13,8 @@ set -o pipefail
 # 1 arg ne 'template' - append argument to end of current day log file
 
 if [[ $# -ne 0 && $# -ne 1 ]]; then
-  echo "Usage: $0 template - to edit template file"
-  echo "     : $0 <string> - to append <string> to end of log file"
-  echo "     : $0 - to create/edit daily log file"
+  echo "Usage: $0 - to create/edit daily log file"
+  echo "     : $0 template - to edit template file"
   exit 2
 fi
 
@@ -53,12 +52,3 @@ if [[ $1 = "template" ]]; then
   nvim $pattern
   exit 0
 fi
-
-if [[ $1 != "template" ]]; then
-  echo $1
-  echo " append to the end of the file"
-  day_log
-  cat ${1} >> $todaylog
-  exit 0
-fi
-
