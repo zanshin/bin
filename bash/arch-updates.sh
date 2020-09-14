@@ -2,4 +2,9 @@
 set -e
 set -o pipefail
 
-echo $(checkupdates | wc -l) > $HOME/.updatecount
+updatefile="$HOME/.updatecount"
+updatecount=$(checkupdates | wc -l)
+
+rm -f "$updatefile"
+echo "$updatecount" > "$updatefile"
+chmod a+rw "$updatefile"
