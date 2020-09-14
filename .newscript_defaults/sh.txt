@@ -1,1 +1,8 @@
-set -euxo pipefail
+set -e
+set -o pipefail
+
+# script
+#
+# Description
+#
+
