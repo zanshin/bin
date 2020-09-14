@@ -29,8 +29,8 @@ if [[ $# -ne 2 && $# -ne 3 ]]; then
 fi
 
 # Location of inbox.md
-inbox_location="/home/mark/code/ouroborus/docs/inbox.md"
-inboxdayfile="/home/mark/code/ouroborus/docs/.inboxday"
+inbox_location="$HOME/code/ouroborus/docs/inbox.md"
+inboxdayfile="$HOME/code/ouroborus/docs/.inboxday"
 
 # Date
 year=$(date '+%Y')
