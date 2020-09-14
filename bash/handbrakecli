@@ -1,0 +1,47 @@
+#!/bin/bash
+#input="$1"
+#shift
+#output="$1"
+#shift
+
+#  HandBrakeCLI -i "$input"  --preset=quix -Y 540 -o $output.m4v
+
+#HandBrakeCLI -i "$input" --preset=Normal -x ref=4 -q 23 -E copy,faac -B auto,128 -O -e x264 -o Strange-cli-23.mkv
+
+qual="-q 17"
+
+if [ "$1" == "18" ]; then
+  qual="-q 18"
+  shift
+fi
+
+outadd=""
+if [ "$1" == "dvd" ]; then
+  shift
+  qual="-t $1 $qual"
+  outadd="track$1-"
+  shift
+fi
+
+audio="1,2,3,4,5,6,7,8,9,10"
+
+if [ "$1" != "${1#astrip:}" ]; then
+  audio="${1#astrip:}"
+  shift
+fi
+
+if [ "$1" == "echo" ]; then
+  echo=1
+  shift
+fi
+
+for i in "$@"; do
+#echo  HandBrakeCLI -i "$i" --preset=Normal -x ref=4 $qual -E copy --audio-copy-mask ac3,dts --audio-fallback ffac3 -O -e x264 --subtitle scan,1,2,3,4,5,6,7,8,9,10 -a $audio -o "$i-out.mkv"
+#  HandBrakeCLI -i "$i" --preset=Normal -x ref=4 $qual -E copy --audio-copy-mask ac3,dts --audio-fallback ffac3 -O -e x264 --subtitle scan,1,2,3,4,5,6,7,8,9,10 -a $audio -o "$i-out.mkv"
+echo  HandBrakeCLI -i "$i" --preset=Normal -x ref=4 "$qual" -E copy --audio-copy-mask ac3 --audio-fallback ffac3 -X 1920 -Y 1080 -O -e x264 --subtitle 1,2,3,4,5,6,7,8,9,10 -a "$audio" -o "$i-${outadd}out.mkv"
+if [ "$echo" == "" ]; then
+      HandBrakeCLI -i "$i" --preset=Normal -x ref=4 "$qual" -E copy --audio-copy-mask ac3 --audio-fallback ffac3 -X 1920 -Y 1080 -O -e x264 --subtitle 1,2,3,4,5,6,7,8,9,10 -a "$audio" -o "$i-${outadd}out.mkv"
+fi
+done
+
+# vim: ft bash
