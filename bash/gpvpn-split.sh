@@ -43,7 +43,7 @@ fi
 
 echo
 echo "Setting a route for the local network"
-echo -e " ${RED}ip route $VERB 192.168.0.0/2 dev $LOCAL_IFACE ${NC}"
+echo -e "     ${RED}ip route $VERB 192.168.0.0/2 dev $LOCAL_IFACE ${NC}"
 sudo ip route "$VERB" 192.168.0.0/16 dev "$LOCAL_IFACE"
 
 if [[ "$(netstat -nr | grep -E $GPVPN_PREFIX)" ]] ; then
@@ -54,7 +54,7 @@ fi
 
 echo
 echo "Setting a route for the GP VPN"
-echo -e " ${RED}route $VERB $GPVPN_RANGE $GATEWAY ${NC}"
+echo -e "     ${RED}route $VERB $GPVPN_RANGE $GATEWAY ${NC}"
 sudo route "$VERB" "$GPVPN_RANGE" "$GATEWAY"
 
 # Start the VPN...
