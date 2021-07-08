@@ -21,11 +21,11 @@ NC='\033[0m'
 # VPN, if that VPN is active.
 
 # Detemine what gateway traffic is flowing through
-GATEWAY=$(netstat -nr | grep -v "::" | grep default | awk '{print $2}')
+GATEWAY=$(netstat -nr | grep -v "::" | grep default | grep -v utun | awk '{print $2}')
 echo -e "Gateway:                ${BLUE}$GATEWAY${NC}"
 
 # Determine which network interface the host is using
-LOCAL_IFACE=$(ip route show | grep default | awk '{print $5}')
+LOCAL_IFACE=$(ip route show | grep default | grep -v utun | awk '{print $5}')
 echo -e "Local interface in use: ${BLUE}$LOCAL_IFACE${NC}"
 
 # GP VPN IP range and prefix - macOS strips the `.0` in the netmask
