@@ -9,7 +9,7 @@
 #  4. You have jq installed. Ref: https://stedolan.github.io/jq/
 
 if [ "$1" == "" ]; then
-  echo "Usage: `basename "$0"` <MFA-TOKEN>"
+  echo "Usage: $(basename "$0") <MFA-TOKEN>"
   exit
 fi
 
@@ -31,12 +31,12 @@ aws_creds_file="$HOME/.aws/credentials"
 # File where original credentials are backed up
 orig_creds_file="$HOME/.aws/origcreds"
 
-old_creds=$(cat ${tmp_creds_file})
+old_creds=$(cat "${tmp_creds_file}")
 regenerate=true
-if [ ! -z "$old_creds" ]; then
+if [ -n "$old_creds" ]; then
   echo "Old Credentials found"
   old_expiry=$(echo ${old_creds} | jq -r ".Credentials.Expiration")
-  if [ ! -z $old_expiry ]; then
+  if [ -n "$old_expiry" ]; then
     echo "Old Expiry: $old_expiry"
     expiry_tstamp=$(date -d ${old_expiry} '+%s')
     now_tstamp=$(date +%s)

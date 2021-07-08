@@ -28,27 +28,27 @@ todaylog="$todaydir/$year/$month/$day.md"
 pattern="$HOME/Sync/documents/journal/day.md"
 
 day_log() {
-  mkdir -p $todaydir/$year/$month
+  mkdir -p "$todaydir"/"$year"/"$month"
 
   # Determine if daily log file exists, edit or create as necessary
-  if [ -f $todaylog ] ; then
+  if [ -f "$todaylog" ] ; then
     echo "Day log exists, editing file."
   else
     echo "Day log does not exist, creating new file."
-    cp $pattern $todaylog
+    cp "$pattern" "$todaylog"
   fi
 
 }
 
 if [[ $# -eq 0 ]]; then
   day_log
-  nvim $todaylog
+  nvim "$todaylog"
   exit 0
 fi
 
 if [[ $1 = "template" ]]; then
-  echo $1
+  echo "$1"
   echo " edit the template"
-  nvim $pattern
+  nvim "$pattern"
   exit 0
 fi
