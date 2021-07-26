@@ -23,9 +23,9 @@ year=$(date '+%Y')
 month=$(date '+%m')
 day=$(date '+%d')
 
-todaydir="$HOME/Sync/documents/journal"
-todaylog="$todaydir/$year/$month/$day.md"
-pattern="$HOME/Sync/documents/journal/day.md"
+todaydir="$HOME/Nextcloud/documents/journal"
+todaylog="$todaydir"/"$year"/"$month"/"$day"."md"
+pattern="$HOME/Nextcloud/documents/journal/day.md"
 
 day_log() {
   mkdir -p $todaydir/$year/$month
