@@ -16,4 +16,4 @@ for i in "$@"; do
 done
 
 # opens url in browser
-open $url
+open "$url"
