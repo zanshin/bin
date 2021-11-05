@@ -5,6 +5,13 @@
 set -e
 set -o pipefail
 
+# Need fzf installed
+if ! command -v fzf &> /dev/null
+then
+    echo "fzf not installed."
+    exit
+fi
+
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
