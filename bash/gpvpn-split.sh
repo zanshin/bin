@@ -58,6 +58,7 @@ echo -e "     ${RED}route $VERB $GPVPN_RANGE $GATEWAY ${NC}"
 sudo route "$VERB" "$GPVPN_RANGE" "$GATEWAY"
 
 # Start the VPN...
-sudo openconnect  --user=mhn --protocol=gp --script "$HOME/src/openconnect/vpnc-script" gpvpn.ksu.edu
+# sudo openconnect  --user=mhn --protocol=gp --csd-user=mhn --csd-wrapper="$HOME/sec/openconnect/hipreport.sh" --script "$HOME/src/openconnect/vpnc-script" gpvpn.ksu.edu
+sudo openconnect --servercert pin-sha256:WmsRWWmtMqC2/sVCT/kVjZo1JnS2swkXj2bwZknc7Kk=  --user=mhn --protocol=gp --script "$HOME/src/openconnect/vpnc-script" gpvpn.ksu.edu
 
 exit 0
