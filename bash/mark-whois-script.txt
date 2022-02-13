@@ -1,0 +1,95 @@
+#!/bin/ksh
+################################################################################
+##
+##	mark-whois.ksh --
+##
+################################################################################
+VERSION='mark-whois.ksh $Revision$'
+##
+## $Id$
+##
+## $Log$
+################################################################################
+
+PGMDIR=$(dd=$(whence "$0"); dd=$(dirname "$dd") ; cd "$dd" ; pwd)
+SCRIPT=$(basename "$0")
+
+Usage="
+$SCRIPT (Version: $VERSION)
+
+Usage: $SCRIPT [ -h ] [ -V ]
+
+where:
+	-h	show usage panel
+	-V	show version information
+"
+
+################################################################################
+## Write error message and exit
+OnError()  { # $* = message to write
+
+	echo "\n$*\n" >&2
+	exit 1
+}
+
+################################################################################
+## Process command line arguments
+unset ERR
+
+[[ 1 -eq 0 ]] && echo  && exit 0
+
+while  getopts :hV  cmdopts
+do
+	case $cmdopts in
+	h)	echo "$Usage"
+		exit 0 ;;
+	V)	echo "$VERSION"
+		exit 0 ;;
+	:)	echo "no argument for \"-$OPTARG\"" >&2
+		ERR=1 ;;
+	?)	echo "\"-$OPTARG\" is not a valid switch" >&2
+		ERR=1 ;;
+	esac
+done
+(( shiftcnt = $OPTIND - 1 ))
+shift $shiftcnt
+
+[[ -z $ERR ]] || exit 1
+
+################################################################################
+##
+
+awk '
+/HREF=.http/ {
+	url=$0
+	sub(/.*HREF=.http:../,"",url)
+	gsub(/\/.*$/,"",url)
+	if(0) printf "1>%s<\n", url
+
+	n=split(url,pp,".")
+	back = (url ~ /uk$/) ? 2 : 1
+	URL=""
+	for (i=n-back;i<=n;i++) URL = URL "." pp[i]
+
+	URL=substr(URL,2)
+	if(0) printf "2>%s<\n", URL
+	print URL
+}' M*html |
+
+while read dom
+do
+	whois $dom
+done |
+
+awk '
+/ *Domain Name:/ { dom=$3; nns=0 }
+/ *Name Server:/ { ns=$3; if(!nns++) { DOMS[dom]=ns; NS[ns]++ } }
+END { for (dom in DOMS) printf "%-20s %5d  %s\n", dom, NS[DOMS[dom]], DOMS[dom], 0 }
+' |
+sort -nr +1
+
+
+
+################################################################################
+##  end of mark-whois.ksh
+################################################################################
