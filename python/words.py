@@ -9,7 +9,8 @@ def main(argv):
     # path = '/path/to/jekyll/posts/'
     #path = '/Users/mark/Projects/octopress/solfege/source/_posts/'
     dirpath = '/Users/mark/code/'
-    site = 'zanshin'
+    # site = 'zanshin'
+    site = 'blog'
     posts = '/_posts/'
     
     try:

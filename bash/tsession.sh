@@ -14,6 +14,8 @@ fi
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
+    # selected=$(find ~/work/builds ~/ ~/work ~/personal -mindepth 1 -maxdepth 1 -type d | fzf)
+    # selected=$(find ~/code ~/ ~/src -mindepth 1 -maxdepth 1 -type d | fzf)
   # Trailing slashes behave differently on Linux and MaxOS (BSD-based). I.e.,
   # `~/` will produce `//` in the resulting paths on MacOS. On Linux `~/` works
   # without a hitch
