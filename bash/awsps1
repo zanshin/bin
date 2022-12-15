@@ -1,0 +1,49 @@
+#!/bin/bash
+set -e
+set -o pipefail
+
+IDENTITY=$(aws sts get-caller-identity 2>/dev/null)
+
+# {   "UserId": "AROA37OUXEIOJBJEKISVP:mhn",
+#     "Account": "823469220380",
+#     "Arn": "arn:aws:sts::823469220380:assumed-role/Administrator/mhn"
+# }
+
+ACCOUNT=$(echo $IDENTITY | jq .Account | sed -e 's/^"//' -e 's/"$//')
+ROLE=$(echo $IDENTITY | jq .Arn | cut -d"/" -f2-2 | tr '"' ' ')
+
+# Lookup account name using $ACCOUNT
+case $ACCOUNT in
+  "448491663515")
+    NAME="KSU"
+    ;;
+  "823469220380")
+    NAME="Audit"
+    ;;
+  "929355877128")
+    NAME="dev"
+    ;;
+  "758488095288")
+    NAME="Log"
+    ;;
+  "249588034506")
+    NAME="Master"
+    ;;
+  "529763884941")
+    NAME="Prod"
+    ;;
+  "654766883003")
+    NAME="Sandbox"
+    ;;
+  "356835234430")
+    NAME="Shared"
+    ;;
+  "529592246862")
+    NAME="Transit"
+    ;;
+  *)
+    NAME="Unknown"
+    ;;
+esac
+
+echo "$ROLE / $NAME"
