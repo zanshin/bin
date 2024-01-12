@@ -9,7 +9,8 @@ set -o pipefail
 # timestamp is not saved.
 #
 
-noteFilename="$HOME/Nextcloud/documents/notes/note-$(date +%Y-%m-%d).md"
+# noteFilename="$HOME/Nextcloud/documents/notes/note-$(date +%Y-%m-%d).md"
+noteFilename="$HOME/Documents/notes/note-$(date +%Y-%m-%d).md"
 
 if [ ! -f "$noteFilename" ]; then
   echo "# Notes for $(date +%Y-%m-%d)" > "$noteFilename"
