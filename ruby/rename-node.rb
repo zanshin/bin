@@ -40,15 +40,15 @@ to_id = ARGV[3]
 
 puts "Loading node #{from_id}..."
 orig_node = Chef::Node.load(from_id)
-node_data = JSON::parse(orig_node.to_json, :create_id => nil)
+node_data = JSON.parse(orig_node.to_json, create_id: nil)
 
 puts "Changing name attribute to #{to_id}..."
 node_data['name'] = to_id
-node_data.values.
-  select { |v| v.is_a?(Hash) and v['name'] }.
-  each { |v| v['name'] = to_id }
+node_data.values
+         .select { |v| v.is_a?(Hash) and v['name'] }
+         .each { |v| v['name'] = to_id }
 
-puts "Saving modified node..."
+puts 'Saving modified node...'
 # without :create_id => nil JSON::parse will create an actual instance
 
 # new_node = JSON::parse(JSON::dump(node_data))
@@ -65,25 +65,25 @@ unless ENV['KEEP_IT_SAFE']
   Chef::ApiClient.load(from_id).destroy
 end
 
-puts "Logging into node..."
+puts 'Logging into node...'
 Net::SSH.start(new_node['fqdn'], Chef::Config[:knife][:ssh_user]) do |ssh|
-  puts "Uploading validation.pem..."
-  ssh.scp.upload!("#{File.expand_path('~')}/.chef/zome.pem", "/tmp/validation.pem")
-  puts "Running update script..."
-  ssh.exec! <<EOF do |ch, stream, data|
-set -e -x
-cd /etc/chef
-sudo mv -v /tmp/validation.pem .
-sudo rm -v client.pem
-sudo sed -i~rename '/node_name/s/^/# /' client.rb
-if [ -f attributes.json ] ; then
-  sudo sed -i~rename 's/"name":"[^"]*",*//' attributes.json
-  [ `sudo cat attributes.json` = '{}' ] && sudo rm -v attributes.json
-  [ -f attributes.json ] && sudo cat attributes.json
-fi
-sudo chef-client -N #{to_id}
-sudo rm -v /etc/chef/validation.pem
-EOF
+  puts 'Uploading validation.pem...'
+  ssh.scp.upload!("#{File.expand_path('~')}/.chef/zome.pem", '/tmp/validation.pem')
+  puts 'Running update script...'
+  ssh.exec! <<~EOF do |_ch, stream, data|
+    set -e -x
+    cd /etc/chef
+    sudo mv -v /tmp/validation.pem .
+    sudo rm -v client.pem
+    sudo sed -i~rename '/node_name/s/^/# /' client.rb
+    if [ -f attributes.json ] ; then
+      sudo sed -i~rename 's/"name":"[^"]*",*//' attributes.json
+      [ `sudo cat attributes.json` = '{}' ] && sudo rm -v attributes.json
+      [ -f attributes.json ] && sudo cat attributes.json
+    fi
+    sudo chef-client -N #{to_id}
+    sudo rm -v /etc/chef/validation.pem
+  EOF
     if stream == :stderr
       STDERR.write data
       STDERR.flush
@@ -94,7 +94,7 @@ EOF
   end
 end
 
-puts "Done!"
+puts 'Done!'
 exit 0
 # http://wiki.opscode.com/display/chef/Knife+Exec#KnifeExec-PassingArgumentstoKnifeScripts
 
