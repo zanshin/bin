@@ -19,16 +19,17 @@ if [[ $# -ne 0 && $# -ne 1 ]]; then
 fi
 
 # Working Storage Section <snerk>
-year=$(date '+%Y')
-month=$(date '+%m')
-day=$(date '+%d')
+# year=$(date '+%Y')
+# month=$(date '+%m')
+# day=$(date '+%d')
 
-todaydir="$HOME/Nextcloud/documents/journal"
-todaylog="$todaydir"/"$year"/"$month"/"$day"."md"
-pattern="$HOME/Nextcloud/documents/journal/day.md"
+todaydir="$HOME/Documents/notes"
+# todaylog="$todaydir"/"$year"/"$month"/"$day"."md"
+todaylog="$todaydir/$(date +%Y)/$(date +%m)/$(date +%d).md"
+pattern="$HOME/Documents/notes/day.md"
 
 day_log() {
-  mkdir -p "$todaydir"/"$year"/"$month"
+  mkdir -p "$todaydir/$(date +%Y)/$(date +%m)"
 
   # Determine if daily log file exists, edit or create as necessary
   if [ -f "$todaylog" ] ; then
