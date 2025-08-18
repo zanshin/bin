@@ -1,0 +1,32 @@
+#!/bin/bash
+# Universal wrapper for using opendiff (FileMerge) with Jujutsu
+
+# Jujutsu calls merge tools with 4 args: base left right output
+# Jujutsu calls diff tools with 2 args: left right
+
+if [ "$#" -eq 4 ]; then
+    # Merge mode
+    BASE="$1"
+    LEFT="$2"
+    RIGHT="$3"
+    OUTPUT="$4"
+
+    opendiff "$LEFT" "$RIGHT" \
+        -ancestor "$BASE" \
+        -merge "$OUTPUT"
+
+elif [ "$#" -eq 2 ]; then
+    # Diff mode
+    LEFT="$1"
+    RIGHT="$2"
+
+    opendiff "$LEFT" "$RIGHT"
+
+else
+    echo "Unexpected number of arguments: $#" >&2
+    exit 1
+fi
+
+# Wait for FileMerge to close before returning
+wait
+
