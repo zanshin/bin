@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -e
+set -o pipefail
+
+# Colors
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+IDENTITY=$(aws sts get-caller-identity 2>/dev/null)
+
+# {   "UserId": "AROA37OUXEIOJBJEKISVP:mhn",
+#     "Account": "823469220380",
+#     "Arn": "arn:aws:sts::823469220380:assumed-role/Administrator/mhn"
+# }
+
+ACCOUNT=$(echo $IDENTITY | jq .Account | sed -e 's/^"//' -e 's/"$//')
+ROLE=$(echo $IDENTITY | jq .Arn | cut -d"/" -f2-3 | tr '"' ' ')
+KUBE=$(egrep "current-context" $HOME/.kube/config | cut -d/ -f2)
+
+# Lookup account name using $ACCOUNT
+case $ACCOUNT in
+  "448491663515")
+    NAME="KSU"
+    ;;
+  "823469220380")
+    NAME="Audit"
+    ;;
+  "929355877128")
+    NAME="dev"
+    ;;
+  "758488095288")
+    NAME="Log"
+    ;;
+  "249588034506")
+    NAME="Master"
+    ;;
+  "529763884941")
+    NAME="Prod"
+    ;;
+  "654766883003")
+    NAME="Sandbox"
+    ;;
+  "356835234430")
+    NAME="Shared"
+    ;;
+  "529592246862")
+    NAME="Transit"
+    ;;
+  *)
+    NAME="Unknown"
+    ;;
+esac
+
+echo -e "You are: ${BLUE}$ROLE${NC} in account: ${BLUE}$NAME${NC} (${RED}$ACCOUNT${NC}) with a Kubernetes context of ${GREEN}$KUBE${NC}"
