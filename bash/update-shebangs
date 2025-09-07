@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# vim: ft=sh
+
+# Script to update shebangs from #!/bin/bash to #!/usr/bin/env bash
+# Usage: ./update-shebangs.sh [directory]
+
+# Use provided directory or ~/bin/bash as default
+DIR="${1:-$HOME/bin/bash}"
+
+# Check if directory exists
+if [[ ! -d "$DIR" ]]; then
+    echo "Error: Directory '$DIR' does not exist" >&2
+    exit 1
+fi
+
+echo "Updating shebangs in directory: $DIR"
+echo "----------------------------------------"
+
+# Counter for modified files
+modified_count=0
+
+# Find all regular files in the directory
+find "$DIR" -maxdepth 1 -type f | while read -r file; do
+    # Check if file starts with #!/bin/bash
+    if head -n 1 "$file" 2>/dev/null | grep -q "^#!/bin/sh"; then
+        echo "Updating: $(basename "$file")"
+        
+        # Create a temporary file for the sed operation
+        temp_file=$(mktemp)
+        
+        # Replace the shebang and write to temp file
+        sed '1s|^#!/bin/bash|#!/usr/bin/env bash|' "$file" > "$temp_file"
+        
+        # Move temp file back to original (preserves permissions)
+        if mv "$temp_file" "$file"; then
+            ((modified_count++))
+        else
+            echo "Error: Failed to update $file" >&2
+            rm -f "$temp_file"
+        fi
+    fi
+done
+
+echo "----------------------------------------"
+echo "Updated $modified_count file(s)"
+
+# Show what we would find now
+echo ""
+echo "Current shebangs in directory:"
+find "$DIR" -maxdepth 1 -type f -exec head -n 1 {} \; | grep "^#!" | sort | uniq -c

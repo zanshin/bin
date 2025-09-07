@@ -1,2 +1,2 @@
-#!/bin/bash
+#!/usr/bin/env bash
 exec /Applications/LilyPond.app/Contents/Resources/bin/lilypond "$@"

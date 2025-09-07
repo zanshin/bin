@@ -1,5 +1,6 @@
-#!/bin/sh
-#
+#!/usr/bin/env bash
+# vim: ft=sh
+
 # Open a new Mac OS X terminal window with the command given as an argument
 #
 # - If there are no arguments, the new terminal window will be opened in the 

@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env bash
+# vim: ft=sh
+
 # for use in tmux
 # assumes chef repositories set up for chef servers in:
 #  ~/code/chef/"chefreponame" where chefrepo is a symlink to the repository

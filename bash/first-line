@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# vim: ft=sh
+
+# Script to list files in a directory with their first line
+# Usage: ./list-files-with-firstline.sh [directory]
+
+# Use provided directory or current directory
+DIR="${1:-.}"
+
+# Check if directory exists
+if [[ ! -d "$DIR" ]]; then
+    echo "Error: Directory '$DIR' does not exist" >&2
+    exit 1
+fi
+
+# Find all regular files in the directory (non-recursive)
+find "$DIR" -maxdepth 1 -type f | sort | while read -r file; do
+    # Get just the filename (basename)
+    filename=$(basename "$file")
+    
+    # Get the first line, handling empty files and binary files gracefully
+    if [[ -s "$file" ]]; then
+        # Check if file appears to be text (basic check)
+        if file "$file" | grep -q "text\|empty\|script"; then
+            first_line=$(head -n 1 "$file" 2>/dev/null | tr -d '\0' | cut -c1-100)
+            if [[ -n "$first_line" ]]; then
+                printf "%-30s - %s\n" "$filename" "$first_line"
+            else
+                printf "%-30s - %s\n" "$filename" "(empty or no readable first line)"
+            fi
+        else
+            printf "%-30s - %s\n" "$filename" "(binary file)"
+        fi
+    else
+        printf "%-30s - %s\n" "$filename" "(empty file)"
+    fi
+done

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # inpath -- Verifies that a specified program is either valid as is
 #   or can be found in the PATH directory list
@@ -32,10 +32,10 @@ checkForCmdInPath()
 
   if [ "$var" != "" ] ; then
     if [ "${var:0:1}" = "/" ] ; then
-      if [ ! -x $var ] ; then
+      if [ ! -x "$var" ] ; then
         return 1
       fi
-    elif ! in_path $var "$PATH" ; then
+    elif ! in_path "$var" "$PATH" ; then
       return 2
     fi
   fi

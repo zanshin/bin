@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Check if a service name was provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <service_name>"
+    exit 1
+fi
+
+SERVICE_NAME="$1"
+
+# Check if the service is running
+if systemctl is-active --quiet "$SERVICE_NAME"; then
+    echo "$SERVICE_NAME is already running."
+else
+    echo "$SERVICE_NAME is not running. Starting it now..."
+    sudo systemctl start "$SERVICE_NAME"
+
+    # Verify if it started successfully
+    if systemctl is-active --quiet "$SERVICE_NAME"; then
+        echo "$SERVICE_NAME started successfully."
+    else
+        echo "Failed to start $SERVICE_NAME."
+    fi
+fi

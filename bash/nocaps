@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+# vim: ft=sh
 
 # This temporarily remaps the CapsLock key to a Control key.
 # The keyboard will return to the previous settings after a reboot.

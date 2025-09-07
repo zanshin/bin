@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # vald-date -- Validates a date, taking in to account leap year rules
 

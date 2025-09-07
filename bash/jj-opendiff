@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Universal wrapper for using opendiff (FileMerge) with Jujutsu
 
 # Jujutsu calls merge tools with 4 args: base left right output

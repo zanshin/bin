@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # nicenumber -- Given a number, shows it in comma-separated form. Expects DD
 # (decimal point delimiter) and TD (thousands delimiter) to be instantiated.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # validfloat -- Tests whether a number is a valid floating-point value.
 # Note that this script cannot accept scientific (1.304e5) notation.

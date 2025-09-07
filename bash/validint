@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # validint -- Validates integer input, allowing negative integers too
 
