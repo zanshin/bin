@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# vim: ft=sh
 
 
 ioreg -l | grep "product-name" | awk -F\" '{print $4" "}'

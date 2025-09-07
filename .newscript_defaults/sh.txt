@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+# vim: ft=sh
+
 set -e
 set -o pipefail
 
