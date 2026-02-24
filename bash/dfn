@@ -1,0 +1,57 @@
+#!/bin/sh
+# vim: ft=sh
+
+# dfn: df normalized, or df not noisy, or df nicely, or df new
+#
+# Whatever you want to call it, this script makes df useful again.
+# It removes read-only disks for Time Machine backups, system volumes
+# that can't be modified, unbrowsable volumes, and other stuff you don't
+# really care about.
+#
+# Instead, you get the same drives that you see on your Mac desktop in an
+# easy-to-read format. Use the options variable below to change the options
+# used for output (for example, -h instead of -H).
+
+# options used to show disk usage: no inodes and sizes in powers of 10
+options="-PH"
+
+if [ ! -z "$*" ]; then
+	echo "usage: edit options variable in `basename $0` script or use /bin/df"
+	exit 1
+fi
+
+# the only part of the root file system that's modifiable
+system="/System/Volumes/Data"
+
+# create an array of local disks (using mount name)
+mount | \
+	grep -v "read-only" | grep -v "nobrowse" | grep -v "smbfs" | \
+	sed -E 's/.* on (.*) \(.*/\1/' > /tmp/disks
+IFS=$'\n' read -d '' -r -a disks < /tmp/disks
+declare -a local
+for disk in "${disks[@]}"; do
+	# names in the array are quoted to preserve spaces in the names
+	local+=(`printf %q "$disk"`)
+done
+
+eval "/bin/df $options $system ${local[@]}" 
+
+# create an array of remote disks (using mount point)
+mount | \
+	grep "smbfs" | \
+	sed 's/ on .*//' > /tmp/shares
+IFS=$'\n' read -d '' -r -a shares < /tmp/shares
+declare -a remote
+for share in "${shares[@]}"; do
+	remote+=(`printf %q "$share"`)
+done
+
+if [ ${#remote[@]} -gt 0 ]; then
+	# remove the first line and filesystem prefixes from output
+	echo ""
+	eval "/bin/df $options ${remote[@]}" | sed '1d' | sed 's/^\/\/.*@//'
+fi
+
+# clean up
+rm /tmp/disks /tmp/shares
+
